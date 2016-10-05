@@ -22,8 +22,8 @@
 
 <script>
 var nick = 'WEBGUEST';
-//var connection = new WebSocket('ws:192.168.2.187:8080', ['soap', 'xmpp']);
-var connection = new WebSocket('ws:192.168.2.187:8080');
+//var connection = new WebSocket('wss:192.168.2.187:8080', ['soap', 'xmpp']);
+var connection = new WebSocket('wss:192.168.2.187:8080');
 function refresh() {
 	connection.send('a');
 }

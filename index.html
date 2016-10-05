@@ -1,0 +1,108 @@
+
+<style>
+#footer {
+    width: 100%;
+    height: 60px;
+    position: fixed;
+    bottom: 0;
+}
+#content {
+	height: 60px;
+	position: fixed;
+	width: 100%;
+	overflow-y: scroll;
+}
+
+</style>
+
+<body>
+	<p id = "content" class = "content"></p>
+	<textarea id = "footer" class = "footer" onkeypress = "onTestEnter(event);">></textarea>
+</body>
+
+<script>
+var nick = 'WEBGUEST';
+//var connection = new WebSocket('ws:192.168.2.187:8080', ['soap', 'xmpp']);
+var connection = new WebSocket('ws:192.168.2.187:8080');
+function refresh() {
+	connection.send('a');
+}
+
+var body = document.body,
+    html = document.documentElement;
+
+var height = Math.max( body.scrollHeight, body.offsetHeight, 
+                       html.clientHeight, html.scrollHeight, html.offsetHeight );
+document.getElementById('content').style.height = (height - 100);
+
+connection.onopen = function () {
+  addMessage('Got a connection <br>'); 
+  setInterval(refresh, 1000);
+};
+
+// Log errors
+connection.onerror = function (error) {
+  addMessage('WebSocket Error ' + error);
+};
+
+function addMessage(message) {
+	var content = document.getElementById('content');
+	content.innerHTML += message;
+	content.scrollTop = content.scrollHeight;
+}
+// Log messages from the server
+connection.onmessage = function (e) {
+  if (e.data == 'a') {
+	
+  }
+  else {
+	var content = document.getElementById('content');
+  content.innerHTML += '>' + e.data + '<br>';
+  content.scrollTop = content.scrollHeight;
+  }
+  
+};
+
+
+
+
+
+function onTestEnter(event) {
+    var key = event.keyCode;
+	console.log(key);
+    // If the user has pressed enter
+    if (key == 13) {
+        connection.send(document.getElementById('footer').value.replace('\n', ''));
+		document.getElementById('footer').value = '';
+		setCaretPosition('footer', 0)
+		return false;
+    }
+    else {
+        return true;
+    }
+}
+
+function setCaretPosition(elemId, caretPos) {
+    var elem = document.getElementById(elemId);
+
+    if(elem != null) {
+        if(elem.createTextRange) {
+            var range = elem.createTextRange();
+            range.move('character', caretPos);
+            range.select();
+        }
+        else {
+            if(elem.selectionStart) {
+                elem.focus();
+                elem.setSelectionRange(caretPos, caretPos);
+            }
+            else
+                elem.focus();
+        }
+    }
+}
+//clearInterval(timerVal);
+
+
+
+</script>
